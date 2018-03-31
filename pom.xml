@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.xeomar.pom</groupId>
+		<artifactId>jar</artifactId>
+		<version>3.0.0-SNAPSHOT</version>
+		<relativePath></relativePath>
+	</parent>
+
+	<groupId>com.xeomar</groupId>
+	<artifactId>acorn</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>Acorn</name>
+	<description>Command line CPU test utility for Java.</description>
+	<inceptionYear>2018</inceptionYear>
+
+	<developers>
+		<developer>
+			<name>Mark Soderquist</name>
+			<email>mark@soderquist.net</email>
+			<roles>
+				<role>Architect</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<repositories>
+		<repository>
+			<id>xeo</id>
+			<url>https://code.xeomar.com/repo/xeo</url>
+		</repository>
+	</repositories>
+
+	<properties>
+		<java.version>8</java.version>
+		<project.timestamp>${maven.build.timestamp}</project.timestamp>
+		<product-name>${project.name}</product-name>
+		<product-identifier>acorn</product-identifier>
+		<slf4j.version>1.8.0-beta0</slf4j.version>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+			<version>1.3</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<sourceDirectory>source/main/java</sourceDirectory>
+		<testSourceDirectory>source/test/java</testSourceDirectory>
+
+		<resources>
+
+			<resource>
+				<directory>source/main/resources</directory>
+			</resource>
+
+		</resources>
+
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>com.xeomar.acorn.Program</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+	</build>
+
+</project>
+
