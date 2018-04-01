@@ -23,8 +23,8 @@ public class Program {
 		try {
 			long score = runTests( new XorShiftCounter(), new RandomCounter(), new AddCounter() );
 
-			System.out.println( "Squirrel (core) count: " + getCoreCount() );
-			System.out.println( "Acorns per squirrel:   " + ( score / 100 ) );
+			System.out.println( "Squirrel acorn score:   " + ( score / 100 ) );
+			System.out.println( "Squirrel count (cores): " + getCoreCount() );
 		} catch( Throwable throwable ) {
 			throwable.printStackTrace( System.err );
 		}
