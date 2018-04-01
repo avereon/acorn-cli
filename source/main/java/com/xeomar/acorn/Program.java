@@ -1,13 +1,25 @@
 package com.xeomar.acorn;
 
+import com.xeomar.product.ProductCard;
+
 public class Program {
+
+	private ProductCard card;
+
+	public Program() {
+		this.card = new ProductCard();
+	}
 
 	public static void main( String[] commands ) {
 		new Program().run( commands );
 	}
 
+	public ProductCard getCard() {
+		return card;
+	}
+
 	public void run( String[] commands ) {
-		System.out.println( "Acorn CPU check" );
+		printHeader( card );
 		try {
 			long score = runTests( new XorShiftCounter(), new RandomCounter(), new AddCounter() );
 
@@ -44,7 +56,11 @@ public class Program {
 		return count / counters.length;
 	}
 
-	public Statistics runTest( Counter counter ) throws InterruptedException {
+	private void printHeader(ProductCard card) {
+		System.out.println( card.getName() + " " + card.getVersion() );
+	}
+
+	private Statistics runTest( Counter counter ) throws InterruptedException {
 		int valueCount = 10;
 		int time = 1000 / valueCount;
 		int iterationLimit = 5;
