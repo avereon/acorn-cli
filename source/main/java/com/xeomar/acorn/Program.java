@@ -1,17 +1,28 @@
 package com.xeomar.acorn;
 
 import com.xeomar.product.ProductCard;
+import com.xeomar.util.LogUtil;
+import org.slf4j.Logger;
+
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 
 public class Program {
 
+	private static final Logger log = LogUtil.get( MethodHandles.lookup().lookupClass() );
+
 	private ProductCard card;
 
-	public Program() {
-		this.card = new ProductCard();
+	public Program() throws IOException {
+		this.card = new ProductCard().init( getClass() );
 	}
 
 	public static void main( String[] commands ) {
-		new Program().run( commands );
+		try {
+			new Program().run( commands );
+		} catch( IOException exception ) {
+			log.error( "Error initializing program", exception );
+		}
 	}
 
 	public ProductCard getCard() {
@@ -23,12 +34,12 @@ public class Program {
 		try {
 			long score = runTests( new XorShiftCounter(), new RandomCounter(), new AddCounter() );
 
-			System.out.println( "Squirrel acorn score:   " + ( score / 100 ) );
-			System.out.println( "Squirrel count (cores): " + getCoreCount() );
+			System.out.println( "Squirrel count: " + getCoreCount() );
+			System.out.println( "Acorn score:    " + (score / 100) );
 		} catch( Throwable throwable ) {
 			throwable.printStackTrace( System.err );
 		}
-		System.exit(0);
+		System.exit( 0 );
 	}
 
 	public int getCoreCount() {
@@ -37,10 +48,10 @@ public class Program {
 
 	public long runTests( Counter... counters ) {
 		StringBuilder bar = new StringBuilder();
-		for( int index =0; index < counters.length; index++ ) {
-			bar.append( "=====");
+		for( int index = 0; index < counters.length; index++ ) {
+			bar.append( "=====" );
 		}
-		System.out.println( "|" + bar + "|");
+		System.out.println( "|" + bar + "|" );
 
 		System.out.print( "|" );
 		long count = 0;
@@ -51,12 +62,12 @@ public class Program {
 				exception.printStackTrace( System.err );
 			}
 		}
-		System.out.println( "|");
+		System.out.println( "|" );
 
 		return count / counters.length;
 	}
 
-	private void printHeader(ProductCard card) {
+	private void printHeader( ProductCard card ) {
 		System.out.println( card.getName() + " " + card.getVersion() );
 	}
 
