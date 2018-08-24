@@ -2,7 +2,7 @@ package com.xeomar.acorn;
 
 import java.util.Random;
 
-public class AddCounter extends Counter {
+public class MultiplyCounter extends Counter {
 
 	private Random r = new Random();
 

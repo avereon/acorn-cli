@@ -32,7 +32,7 @@ public class Program {
 	public void run( String[] commands ) {
 		printHeader( card );
 		try {
-			long score = runTests( new XorShiftCounter(), new RandomCounter(), new AddCounter() );
+			long score = runTests( new XorShiftCounter(), new RandomCounter(), new MultiplyCounter() );
 
 			System.out.println( "Squirrel count: " + getCoreCount() );
 			System.out.println( "Acorn score:    " + (score / 100) );
@@ -77,9 +77,9 @@ public class Program {
 		int iterationLimit = 5;
 		int iterationCount = 0;
 
-		long[] values = new long[ valueCount ];
-		Statistics bestStats = null;
 		Statistics lastStats;
+		Statistics bestStats = null;
+		long[] values = new long[ valueCount ];
 		do {
 			System.out.print( '-' );
 			for( int index = 0; index < valueCount; index++ ) {
