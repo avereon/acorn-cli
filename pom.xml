@@ -107,7 +107,7 @@
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 					<attach>false</attach>
-					<finalName>acorn</finalName>
+					<finalName>product</finalName>
   				<appendAssemblyId>false</appendAssemblyId>
 					<archive>
 						<manifest>
