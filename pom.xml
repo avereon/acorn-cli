@@ -37,7 +37,7 @@
 	</repositories>
 
 	<properties>
-		<java.version>9</java.version>
+		<java.version>11</java.version>
 		<project.timestamp>${maven.build.timestamp}</project.timestamp>
 		<product-name>${project.name}</product-name>
 		<product-identifier>acorn</product-identifier>
