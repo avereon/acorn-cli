@@ -5,12 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.xeomar.pom</groupId>
+		<groupId>com.avereon.pom</groupId>
 		<artifactId>jar</artifactId>
 		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.xeomar</groupId>
+	<groupId>com.avereon</groupId>
 	<artifactId>acorn</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -31,8 +31,8 @@
 
 	<repositories>
 		<repository>
-			<id>xeo</id>
-			<url>https://code.xeomar.com/repo/xeo</url>
+			<id>avn</id>
+			<url>https://code.avereon.com/repo/avn</url>
 		</repository>
 	</repositories>
 
@@ -47,8 +47,8 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>com.xeomar</groupId>
-			<artifactId>razor</artifactId>
+			<groupId>com.avereon</groupId>
+			<artifactId>zevra</artifactId>
 			<version>0.1-SNAPSHOT</version>
 		</dependency>
 
@@ -111,7 +111,7 @@
   				<appendAssemblyId>false</appendAssemblyId>
 					<archive>
 						<manifest>
-							<mainClass>com.xeomar.acorn.Program</mainClass>
+							<mainClass>com.avereon.acorn.Program</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

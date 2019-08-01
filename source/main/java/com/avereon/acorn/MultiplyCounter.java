@@ -1,4 +1,4 @@
-package com.xeomar.acorn;
+package com.avereon.acorn;
 
 import java.util.Random;
 

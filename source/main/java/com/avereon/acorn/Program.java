@@ -1,7 +1,7 @@
-package com.xeomar.acorn;
+package com.avereon.acorn;
 
-import com.xeomar.product.ProductCard;
-import com.xeomar.util.LogUtil;
+import com.avereon.product.ProductCard;
+import com.avereon.util.LogUtil;
 import org.slf4j.Logger;
 
 import java.io.IOException;
