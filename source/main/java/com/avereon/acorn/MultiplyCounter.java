@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class MultiplyCounter extends Counter {
 
-	private Random r = new Random();
+	private final Random r = new Random();
 
 	private int s;
 

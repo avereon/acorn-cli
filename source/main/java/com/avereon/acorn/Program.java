@@ -1,28 +1,20 @@
 package com.avereon.acorn;
 
 import com.avereon.product.ProductCard;
-import com.avereon.util.LogUtil;
-import org.slf4j.Logger;
-
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
+import com.avereon.util.Log;
 
 public class Program {
 
-	private static final Logger log = LogUtil.get( MethodHandles.lookup().lookupClass() );
+	private static final System.Logger log = Log.get();
 
-	private ProductCard card;
+	private final ProductCard card;
 
-	public Program() throws IOException {
-		this.card = new ProductCard().init( getClass() );
+	public Program() {
+		this.card = new ProductCard().card( getClass() );
 	}
 
 	public static void main( String[] commands ) {
-		try {
-			new Program().run( commands );
-		} catch( IOException exception ) {
-			log.error( "Error initializing program", exception );
-		}
+		new Program().run( commands );
 	}
 
 	public ProductCard getCard() {
@@ -47,12 +39,7 @@ public class Program {
 	}
 
 	public long runTests( Counter... counters ) {
-		StringBuilder bar = new StringBuilder();
-		for( int index = 0; index < counters.length; index++ ) {
-			bar.append( "=====" );
-		}
-		System.out.println( "|" + bar + "|" );
-
+		System.out.println( "|" + "=====".repeat( counters.length ) + "|" );
 		System.out.print( "|" );
 		long count = 0;
 		for( Counter counter : counters ) {
