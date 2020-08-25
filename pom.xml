@@ -105,5 +105,37 @@
 
 	</build>
 
+	<profiles>
+		<profile>
+			<id>packs</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.avereon</groupId>
+						<artifactId>cameo</artifactId>
+						<executions>
+							<execution>
+								<id>render</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>render</goal>
+								</goals>
+								<configuration>
+									<images>
+										<image>
+											<class>com.avereon.zenna.icon.AcornIcon</class>
+											<target>${images-folder}/product.png</target>
+											<theme>light</theme>
+										</image>
+									</images>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>
 
