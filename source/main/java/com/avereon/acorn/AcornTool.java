@@ -24,13 +24,13 @@ public class AcornTool extends ProgramTool {
 
 	private static final Timer timer = new Timer( true );
 
-	private final SystemCpuLoadCheck cpuLoadCheck;
-
 	private final Consumer<Double> cpuLoadListener;
 
 	private final Label result;
 
 	private final ProgressIndicator progress;
+
+	private SystemCpuLoadCheck cpuLoadCheck;
 
 	private Button button;
 
@@ -48,7 +48,6 @@ public class AcornTool extends ProgramTool {
 		String startText = product.rb().text( BundleKey.LABEL, "start" );
 		String waitingText = product.rb().text( "message", "waiting-to-start" );
 
-		cpuLoadCheck = new SystemCpuLoadCheck();
 		cpuLoadListener = d -> log.log( Log.DEBUG, "cpu=" + d );
 
 		result = new Label( "0" );
@@ -68,13 +67,14 @@ public class AcornTool extends ProgramTool {
 	}
 
 	@Override
-	protected void display() throws ToolException {
+	protected void allocate() throws ToolException {
+		cpuLoadCheck = new SystemCpuLoadCheck();
 		cpuLoadCheck.addListener( cpuLoadListener );
 		timer.schedule( cpuLoadCheck, 0, 1000 );
 	}
 
 	@Override
-	protected void conceal() throws ToolException {
+	protected void deallocate() throws ToolException {
 		cpuLoadCheck.cancel();
 		cpuLoadCheck.removeListener( cpuLoadListener );
 	}
