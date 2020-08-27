@@ -1,0 +1,17 @@
+.acorn-tool .layout {
+	-fx-spacing: 2em;
+	-fx-alignment: center;
+}
+
+.acorn-tool .result {
+	-fx-font-size: 5em;
+}
+
+.acorn-tool .progress {
+	-fx-pref-width: 10cm;
+	-fx-pref-height: 1cm;
+}
+
+.acorn-tool .message {
+	#-fx-font-size: 2em;
+}

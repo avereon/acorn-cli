@@ -4,6 +4,10 @@ public abstract class Counter {
 
 	private Thread thread;
 
+	private long startTime;
+
+	private long stopTime;
+
 	private long count;
 
 	public abstract void task();
@@ -33,11 +37,12 @@ public abstract class Counter {
 	}
 
 	private void run() {
-		long counter = 0;
+		this.startTime = System.nanoTime();
 		while( !thread.isInterrupted() ) {
 			task();
 			count++;
 		}
+		this.stopTime = System.nanoTime();
 	}
 
 }
