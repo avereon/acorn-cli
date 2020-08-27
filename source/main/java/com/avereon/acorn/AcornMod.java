@@ -22,6 +22,8 @@ public class AcornMod extends Mod {
 		super.startup();
 		registerIcon( getCard().getArtifact(), new AcornIcon() );
 
+		// NEXT registerScheme( new AcornScheme(getProgram()) );
+
 		registerAssetType( acornAssetType = new AcornAssetType( this ) );
 		ToolRegistration design2dEditorRegistration = new ToolRegistration( this, AcornTool.class );
 		design2dEditorRegistration.setName( "Acorn Counting Tool" );

@@ -5,6 +5,7 @@ import com.avereon.xenon.BundleKey;
 import com.avereon.xenon.ProgramProduct;
 import com.avereon.xenon.ProgramTool;
 import com.avereon.xenon.asset.Asset;
+import com.avereon.xenon.asset.OpenAssetRequest;
 import com.avereon.xenon.task.TaskEvent;
 import com.avereon.xenon.workpane.ToolException;
 import com.avereon.zerra.javafx.Fx;
@@ -71,6 +72,12 @@ public class AcornTool extends ProgramTool {
 		cpuLoadCheck = new SystemCpuLoadCheck();
 		cpuLoadCheck.addListener( cpuLoadListener );
 		timer.schedule( cpuLoadCheck, 0, 1000 );
+	}
+
+	@Override
+	protected void ready( OpenAssetRequest request ) throws ToolException {
+		super.ready( request );
+		setTitle( "" );
 	}
 
 	@Override

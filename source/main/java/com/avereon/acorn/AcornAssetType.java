@@ -24,14 +24,10 @@ public class AcornAssetType extends AssetType {
 	}
 
 	@Override
-	public boolean assetNew( Program program, Asset asset ) throws AssetException {
-		asset.setModified( false );
-		return true;
-	}
-
-	@Override
 	public boolean assetOpen( Program program, Asset asset ) throws AssetException {
 		asset.setModified( false );
+		asset.setUri( URI );
+		asset.setName( getName() );
 		return true;
 	}
 
