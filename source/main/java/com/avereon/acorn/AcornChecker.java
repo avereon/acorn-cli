@@ -15,7 +15,11 @@ public class AcornChecker extends Task<Long> {
 
 	@Override
 	public Long call() throws Exception {
-		return runTests( new XorShiftCounter(), new RandomCounter(), new MultiplyCounter() );
+		try {
+			return runTests( new XorShiftCounter(), new RandomCounter(), new MultiplyCounter() );
+		} catch( InterruptedException ignore ) {
+			return 0L;
+		}
 	}
 
 	public int getCoreCount() {
@@ -26,17 +30,13 @@ public class AcornChecker extends Task<Long> {
 		return steps;
 	}
 
-	public long runTests( Counter... counters ) {
+	public long runTests( Counter... counters ) throws InterruptedException {
 		setTotal( this.steps = counters.length * ITERATION_LIMIT );
 		this.step = 0;
 
 		long count = 0;
 		for( Counter counter : counters ) {
-			try {
-				count += runTest( counter ).getAvg();
-			} catch( InterruptedException exception ) {
-				exception.printStackTrace( System.err );
-			}
+			count += runTest( counter ).getAvg();
 		}
 
 		return count / counters.length / 100;
@@ -56,7 +56,7 @@ public class AcornChecker extends Task<Long> {
 			}
 			lastStats = new Statistics( values, time );
 			if( bestStats == null || lastStats.getJitter() < bestStats.getJitter() ) bestStats = lastStats;
-			setProgress( step++ );
+			setProgress( ++step );
 			iterationCount++;
 		} while( iterationCount < ITERATION_LIMIT );
 

@@ -28,13 +28,15 @@ public class AcornTool extends ProgramTool {
 
 	private final Consumer<Double> cpuLoadListener;
 
-	private Label result;
+	private final Label result;
+
+	private final ProgressIndicator progress;
 
 	private Button button;
 
-	private ProgressIndicator progress;
+	private final Label message;
 
-	private Label message;
+	private AcornChecker checker;
 
 	public AcornTool( ProgramProduct product, Asset asset ) {
 		super( product, asset );
@@ -58,7 +60,7 @@ public class AcornTool extends ProgramTool {
 		message = new Label( waitingText );
 		message.getStyleClass().addAll( "message" );
 
-		button.setOnAction( e -> start() );
+		button.setOnAction( e -> toggle() );
 
 		VBox box = new VBox( result, progress, button );
 		box.getStyleClass().addAll( "layout" );
@@ -77,21 +79,45 @@ public class AcornTool extends ProgramTool {
 		cpuLoadCheck.removeListener( cpuLoadListener );
 	}
 
+	private void setScore( long score ) {
+		Fx.run( () -> result.setText( String.valueOf( score ) ) );
+	}
+
+	private boolean isRunning() {
+		return !(checker == null || checker.isDone());
+	}
+
+	private void toggle() {
+		if( isRunning() ) {
+			checker.cancel( true );
+		} else {
+			start();
+		}
+	}
+
+	private void updateButtonText() {
+		String startText = getProduct().rb().text( BundleKey.LABEL, "start" );
+		String cancelText = getProduct().rb().text( BundleKey.LABEL, "cancel" );
+		Fx.run( () -> button.setText( isRunning() ? cancelText : startText ) );
+	}
+
 	private void start() {
-		String testingText = getProduct().rb().text( "message", "testing" );
-		Fx.run( () -> message.setText( testingText ) );
-		String acornsPrompt = getProduct().rb().text( BundleKey.PROMPT, "acorns" );
-		AcornChecker checker = new AcornChecker();
+		checker = new AcornChecker();
+		checker.register( TaskEvent.SUBMITTED, e -> {
+			Fx.run( () -> progress.setProgress( 0 ) );
+			updateButtonText();
+		} );
 		checker.register( TaskEvent.PROGRESS, e -> Fx.run( () -> progress.setProgress( e.getTask().getPercent() ) ) );
 		checker.register( TaskEvent.SUCCESS, e -> Fx.run( () -> {
 			try {
-				long score = checker.get();
-				result.setText( String.valueOf( score  ) );
-				message.setText( acornsPrompt + " " + score );
+				setScore( checker.get() );
 			} catch( InterruptedException | ExecutionException exception ) {
 				log.log( Log.WARN, "Error computing acorn count", exception );
 			}
 		} ) );
+		checker.register( TaskEvent.CANCEL, e -> Fx.run( () -> progress.setProgress( 0 ) ) );
+		checker.register( TaskEvent.FINISH, e -> updateButtonText() );
+
 		getProgram().getTaskManager().submit( checker );
 	}
 
