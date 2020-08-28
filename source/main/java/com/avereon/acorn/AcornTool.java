@@ -43,7 +43,7 @@ public class AcornTool extends ProgramTool {
 		super( product, asset );
 		addStylesheet( AcornMod.STYLESHEET );
 		getStyleClass().addAll( "acorn-tool" );
-		setIcon( "acorn" );
+		setIcon( product.getCard().getArtifact() );
 
 		String acornText = product.rb().text( BundleKey.LABEL, "acorn" );
 		String startText = product.rb().text( BundleKey.LABEL, "start" );

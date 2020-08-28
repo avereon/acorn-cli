@@ -3,7 +3,6 @@ package com.avereon.acorn;
 import com.avereon.util.Log;
 import com.avereon.xenon.Mod;
 import com.avereon.xenon.ToolRegistration;
-import com.avereon.zenna.icon.AcornIcon;
 
 public class AcornMod extends Mod {
 

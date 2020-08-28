@@ -8,7 +8,7 @@ module com.avereon.acorn {
 	opens com.avereon.acorn.bundles;
 	opens com.avereon.acorn.settings;
 
-	exports com.avereon.acorn to com.avereon.xenon;
+	exports com.avereon.acorn to com.avereon.xenon, com.avereon.zerra;
 
 	provides com.avereon.xenon.Mod with AcornMod;
 }
