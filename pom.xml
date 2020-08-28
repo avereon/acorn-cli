@@ -123,7 +123,7 @@
 								<configuration>
 									<images>
 										<image>
-											<class>com.avereon.zenna.icon.AcornIcon</class>
+											<class>com.avereon.acorn.AcornIcon</class>
 											<target>${images-folder}/product.png</target>
 											<theme>light</theme>
 										</image>
