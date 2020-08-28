@@ -51,7 +51,7 @@ public class AcornTool extends ProgramTool {
 
 		cpuLoadListener = d -> log.log( Log.DEBUG, "cpu=" + d );
 
-		result = new Label( "0" );
+		result = new Label( "", getProgram().getIconLibrary().getIcon( "acorn", 64 ) );
 		result.getStyleClass().addAll( "result" );
 		button = new Button( startText );
 		//button.getStyleClass().addAll( "button" );
@@ -77,7 +77,7 @@ public class AcornTool extends ProgramTool {
 	@Override
 	protected void ready( OpenAssetRequest request ) throws ToolException {
 		super.ready( request );
-		setTitle( "" );
+		setTitle( request.getAsset().getName() );
 	}
 
 	@Override
