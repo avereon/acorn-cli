@@ -1,16 +1,20 @@
 package com.avereon.acorn;
 
-public abstract class Counter {
+public class Counter {
+
+	private Runnable runnable;
 
 	private Thread thread;
 
-	private long startTime;
-
-	private long stopTime;
-
 	private long count;
 
-	public abstract void task();
+	private long time;
+
+	protected Counter() {}
+
+	public Counter( Runnable runnable ) {
+		this.runnable = runnable;
+	}
 
 	public Counter start() {
 		thread = new Thread( this::run );
@@ -32,17 +36,22 @@ public abstract class Counter {
 		return count;
 	}
 
-	public long getCount() {
+	public synchronized long getCount() {
 		return count;
 	}
 
-	private void run() {
-		this.startTime = System.nanoTime();
+	public synchronized long getTime() {
+		return time;
+	}
+
+	private synchronized void run() {
+		long startTime = System.nanoTime();
 		while( !thread.isInterrupted() ) {
-			task();
+			runnable.run();
 			count++;
 		}
-		this.stopTime = System.nanoTime();
+		long stopTime = System.nanoTime();
+		time = stopTime - startTime;
 	}
 
 }

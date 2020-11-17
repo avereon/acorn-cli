@@ -1,15 +1,15 @@
-package com.avereon.acorn;
+package com.avereon.acorn.test;
 
 import java.util.Random;
 
-public class MultiplyCounter extends Counter {
+public class MultiplyTest implements Runnable {
 
 	private final Random r = new Random();
 
 	private int s;
 
 	@Override
-	public void task() {
+	public void run() {
 		s = r.nextInt() * r.nextInt();
 	}
 

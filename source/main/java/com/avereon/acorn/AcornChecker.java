@@ -1,5 +1,6 @@
 package com.avereon.acorn;
 
+import com.avereon.acorn.test.LoadTest;
 import com.avereon.util.Log;
 import com.avereon.xenon.task.Task;
 
@@ -7,7 +8,9 @@ public class AcornChecker extends Task<Long> {
 
 	private static final System.Logger log = Log.get();
 
-	private static final int ITERATION_LIMIT = 5;
+	private static final int ITERATION_LIMIT = 10;
+
+	private static final int STEPS_PER_ITERATION = 10;
 
 	private int step;
 
@@ -16,7 +19,7 @@ public class AcornChecker extends Task<Long> {
 	@Override
 	public Long call() throws Exception {
 		try {
-			return runTests( new XorShiftCounter(), new RandomCounter(), new MultiplyCounter() );
+			return runTests( new LoadTest() );
 		} catch( InterruptedException ignore ) {
 			return 0L;
 		}
@@ -30,35 +33,40 @@ public class AcornChecker extends Task<Long> {
 		return steps;
 	}
 
-	public long runTests( Counter... counters ) throws InterruptedException {
-		setTotal( this.steps = counters.length * ITERATION_LIMIT );
+	public long runTests( Runnable... tests ) throws InterruptedException {
+		setTotal( this.steps = tests.length * ITERATION_LIMIT * STEPS_PER_ITERATION );
 		this.step = 0;
 
 		long count = 0;
-		for( Counter counter : counters ) {
-			count += runTest( counter ).getAvg();
+		for( Runnable test : tests ) {
+			count += runTest( new Counter( test ) ).getAvg();
 		}
 
-		return count / counters.length / 100;
+		return count / tests.length / 100;
 	}
 
 	private Statistics runTest( Counter counter ) throws InterruptedException {
+		int time = 100;
 		int valueCount = 10;
-		int time = 1000 / valueCount;
+		int iterationLimit = ITERATION_LIMIT * STEPS_PER_ITERATION;
 		int iterationCount = 0;
 
-		Statistics lastStats;
 		Statistics bestStats = null;
-		long[] values = new long[ valueCount ];
+		int count = 0;
+		Statistics stats = new Statistics( valueCount );
 		do {
-			for( int index = 0; index < valueCount; index++ ) {
-				values[ index ] = counter.runFor( time );
+			counter.runFor( time );
+			stats.add( counter.getCount(), counter.getTime() );
+			count++;
+			if( count >= valueCount ) {
+				stats.process();
+				if( bestStats == null || stats.getJitter() < bestStats.getJitter() ) bestStats = stats;
+				count = 0;
+				stats = new Statistics( valueCount );
 			}
-			lastStats = new Statistics( values, time );
-			if( bestStats == null || lastStats.getJitter() < bestStats.getJitter() ) bestStats = lastStats;
 			setProgress( ++step );
 			iterationCount++;
-		} while( iterationCount < ITERATION_LIMIT );
+		} while( iterationCount < iterationLimit );
 
 		return bestStats;
 	}
