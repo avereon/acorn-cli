@@ -6,13 +6,13 @@
 
 	<parent>
 		<groupId>com.avereon.pom</groupId>
-		<artifactId>mod</artifactId>
+		<artifactId>jar</artifactId>
 		<version>3.1.0-SNAPSHOT</version>
 	</parent>
 
 	<groupId>com.avereon</groupId>
 	<artifactId>acorn</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Acorn</name>
@@ -48,6 +48,12 @@
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>com.avereon</groupId>
+			<artifactId>zevra</artifactId>
+			<version>[0.1,)</version>
+		</dependency>
 
 	</dependencies>
 
@@ -104,38 +110,6 @@
 		</plugins>
 
 	</build>
-
-	<profiles>
-		<profile>
-			<id>packs</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.avereon</groupId>
-						<artifactId>cameo</artifactId>
-						<executions>
-							<execution>
-								<id>render</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>render</goal>
-								</goals>
-								<configuration>
-									<images>
-										<image>
-											<class>com.avereon.acorn.AcornIcon</class>
-											<target>${images-folder}/product.png</target>
-											<theme>light</theme>
-										</image>
-									</images>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 
 </project>
 

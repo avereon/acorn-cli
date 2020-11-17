@@ -84,7 +84,7 @@ public class Statistics {
 		max = maximum;
 
 		jitter = (maximum - minimum) / (double)average;
-		System.err.println( "min=" + minimum + "  avg=" + average + "  max=" + maximum + "  jit=" + jitter );
+		//System.err.println( "min=" + minimum + "  avg=" + average + "  max=" + maximum + "  jit=" + jitter );
 	}
 
 }
