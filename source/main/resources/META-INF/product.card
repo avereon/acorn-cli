@@ -3,7 +3,6 @@
   "artifact" : "${project.artifactId}",
   "version" : "${project.version}",
   "timestamp" : "${project.timestamp}",
-	"packaging": "mod",
 	"icons": [ "${project.artifactId}", "https://avereon.com/download/latest/${project.artifactId}/product/icon" ],
 	"name": "${project.name}",
 	"provider": "${project.organization.name}",
