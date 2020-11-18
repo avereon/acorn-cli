@@ -1,5 +1,6 @@
 package com.avereon.acorn;
 
+import com.avereon.acorn.test.LoadTest;
 import com.avereon.util.Log;
 
 import java.util.HashSet;
@@ -23,6 +24,10 @@ public class AcornChecker implements Callable<Long> {
 	private final Set<Consumer<Integer>> listeners;
 
 	private final Runnable[] tests;
+
+	public AcornChecker() {
+		this( new LoadTest() );
+	}
 
 	public AcornChecker( Runnable... tests ) {
 		listeners = new CopyOnWriteArraySet<>();
