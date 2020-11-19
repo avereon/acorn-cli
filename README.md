@@ -1,4 +1,4 @@
-[build-status]: https://travis-ci.org/avereon/acorn.svg?branch=master "Build status"
+[build-status]: https://github.com/avereon/acorn/workflows/Avereon%20Acorn%20Continuous/badge.svg "Build status"
 
 # Acorn ![alt text][build-status]
 
