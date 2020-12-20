@@ -3,7 +3,7 @@ name: Avereon Acorn Continuous
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
       - stable
