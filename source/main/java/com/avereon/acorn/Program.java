@@ -11,7 +11,7 @@ public class Program {
 	private final ProductCard card;
 
 	public Program() {
-		this.card = new ProductCard().card( getClass() );
+		this.card = ProductCard.card( getClass() );
 	}
 
 	public static void main( String[] commands ) {
