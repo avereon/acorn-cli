@@ -104,7 +104,7 @@
 				<configuration>
 					<!-- The argLine and systemPropertyVariables should match the failsafe configuration below -->
 					<argLine>
-						--add-opens=com.avereon.acorn/com.avereon.acorn=ALL-UNNAMED
+						--add-opens=com.avereon.acorncli/com.avereon.acorncli=ALL-UNNAMED
 					</argLine>
 				</configuration>
 			</plugin>

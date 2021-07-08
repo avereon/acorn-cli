@@ -1,4 +1,4 @@
-module com.avereon.acorn {
+module com.avereon.acorncli {
 
 	// Compile-time only
 	requires static lombok;
