@@ -1,5 +1,5 @@
-[build-status]: https://github.com/avereon/acorn/workflows/Avereon%20Acorn%20Continuous/badge.svg "Build status"
+[build-status]: https://github.com/avereon/acorn-cli/workflows/CI/badge.svg "Build status"
 
-# Acorn ![alt text][build-status]
+# Acorn CLI ![alt text][build-status]
 
-A small command line application to score CPU capability in Java
+A small command line application to score CPU performance in Java.

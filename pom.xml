@@ -15,7 +15,7 @@
 	<version>1.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Acorn</name>
+	<name>Acorn CLI</name>
 	<description>Simple system profiling utility</description>
 	<inceptionYear>2018</inceptionYear>
 

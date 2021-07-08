@@ -11,7 +11,7 @@ on:
     - cron: '40 12 * * *'
 
 env:
-  AVN_PRODUCT: "acorn"
+  AVN_PRODUCT: "acorn-cli"
   # The default release, should be overridden in config.sh
   AVN_RELEASE: "latest"
   # The default platform, should be overridden in the platform binaries jobs below
