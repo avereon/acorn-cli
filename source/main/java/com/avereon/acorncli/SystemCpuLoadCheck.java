@@ -1,4 +1,4 @@
-package com.avereon.acorn;
+package com.avereon.acorncli;
 
 import lombok.CustomLog;
 

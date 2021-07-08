@@ -1,6 +1,6 @@
-package com.avereon.acorn;
+package com.avereon.acorncli;
 
-import com.avereon.acorn.test.LoadTest;
+import com.avereon.acorncli.test.LoadTest;
 import lombok.CustomLog;
 
 import java.util.HashSet;

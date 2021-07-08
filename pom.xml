@@ -91,7 +91,7 @@
   				<appendAssemblyId>false</appendAssemblyId>
 					<archive>
 						<manifest>
-							<mainClass>com.avereon.acorn.Program</mainClass>
+							<mainClass>com.avereon.acorncli.Program</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

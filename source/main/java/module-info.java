@@ -6,6 +6,6 @@ module com.avereon.acorn {
 	// Both compile-time and run-time
 	requires com.avereon.zevra;
 	requires java.management;
-	exports com.avereon.acorn;
+	exports com.avereon.acorncli;
 
 }
