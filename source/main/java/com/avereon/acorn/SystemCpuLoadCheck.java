@@ -1,6 +1,6 @@
 package com.avereon.acorn;
 
-import com.avereon.util.Log;
+import lombok.CustomLog;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
@@ -11,9 +11,8 @@ import java.util.TimerTask;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
 
+@CustomLog
 class SystemCpuLoadCheck extends TimerTask {
-
-	private static final System.Logger log = Log.get();
 
 	private final OperatingSystemMXBean bean;
 
@@ -49,11 +48,11 @@ class SystemCpuLoadCheck extends TimerTask {
 				try {
 					listener.accept( result );
 				} catch( Throwable throwable ) {
-					log.log( Log.WARN, "Error consuming system CPU load", throwable );
+					log.atWarning().withCause( throwable ).log( "Error consuming system CPU load" );
 				}
 			}
 		} catch( IllegalAccessException | InvocationTargetException exception ) {
-			log.log( Log.ERROR, "Error getting system CPU load", exception );
+			log.atSevere().withCause( exception ).log( "Error getting system CPU load" );
 			cancel();
 		}
 	}

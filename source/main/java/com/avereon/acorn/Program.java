@@ -2,11 +2,10 @@ package com.avereon.acorn;
 
 import com.avereon.acorn.test.LoadTest;
 import com.avereon.product.ProductCard;
-import com.avereon.util.Log;
+import lombok.CustomLog;
 
+@CustomLog
 public class Program {
-
-	private static final System.Logger log = Log.get();
 
 	private final ProductCard card;
 

@@ -1,7 +1,7 @@
 package com.avereon.acorn;
 
 import com.avereon.acorn.test.LoadTest;
-import com.avereon.util.Log;
+import lombok.CustomLog;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -9,9 +9,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
 
+@CustomLog
 public class AcornChecker implements Callable<Long> {
-
-	private static final System.Logger log = Log.get();
 
 	private static final int ITERATION_LIMIT = 10;
 
