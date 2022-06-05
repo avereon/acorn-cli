@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * The way this works is that the tests are as many times as possible in a small
@@ -22,11 +23,13 @@ import java.util.function.Consumer;
 @CustomLog
 public class AcornChecker implements Callable<Long> {
 
-	private static final int SAMPLE_TIME = 100;
+	public static final int SAMPLE_TIME_MS = 100;
 
-	private static final int ITERATION_COUNT = 5;
+	public static final int ITERATION_COUNT = 5;
 
-	private static final int SAMPLES_PER_ITERATION = 10;
+	public static final int BLOCKS_PER_ITERATION = 10;
+
+	public static final int SAMPLES_PER_BLOCK = 10;
 
 	private int steps;
 
@@ -34,11 +37,18 @@ public class AcornChecker implements Callable<Long> {
 
 	private final Runnable[] tests;
 
+	private final int coreCount;
+
 	public AcornChecker() {
-		this( new LoadTest() );
+		this( getAvailableCoreCount(), new LoadTest() );
 	}
 
 	public AcornChecker( Runnable... tests ) {
+		this( getAvailableCoreCount(), tests );
+	}
+
+	public AcornChecker( int coreCount, Runnable... tests ) {
+		this.coreCount = coreCount;
 		this.tests = tests;
 		this.listeners = new CopyOnWriteArraySet<>();
 		setTotal( this.steps = tests.length * ITERATION_COUNT );
@@ -53,12 +63,12 @@ public class AcornChecker implements Callable<Long> {
 		}
 	}
 
-	public int getAvailableCoreCount() {
+	public static int getAvailableCoreCount() {
 		return Runtime.getRuntime().availableProcessors();
 	}
 
 	public int getCoreCount() {
-		return 1;
+		return coreCount;
 	}
 
 	public int getStepCount() {
@@ -80,24 +90,24 @@ public class AcornChecker implements Callable<Long> {
 		ExecutorService executor = Executors.newFixedThreadPool( coreCount );
 
 		// Start all the work
-		Set<Future<Statistics>> futures = new HashSet<>();
+		Set<Iteration> iterations = new HashSet<>();
+		Set<Future<Sample>> futures = new HashSet<>();
 		for( int coreIndex = 0; coreIndex < coreCount; coreIndex++ ) {
 			for( Runnable test : tests ) {
-				futures.add( executor.submit( () -> runTest( new Counter( test ) ) ) );
+				Iteration iteration = new Iteration( test );
+				futures.addAll( executor.invokeAll( iteration.getBlocks() ) );
+				iterations.add( iteration );
 			}
 		}
 
 		// Wait for all the work
-		for( Future<Statistics> future : futures ) {
-			count += future.get().getAvg();
+		for( Future<Sample> future : futures ) {
+			future.get();
 		}
 
-		// Single thread
-//				for( Runnable test : tests ) {
-//					count += runTest( new Counter( test ) ).getAvg();
-//				}
+		count += iterations.stream().mapToLong( i -> i.getStatistics().getAvg() ).sum();
 
-		return count / tests.length / 100;
+		return count / tests.length / 100 / getCoreCount();
 	}
 
 	public void addListener( Consumer<Integer> runnable ) {
@@ -110,18 +120,39 @@ public class AcornChecker implements Callable<Long> {
 
 	private int count;
 
+	//	private Statistics runTest2( Counter2 counter ) throws InterruptedException {
+	//		Statistics best = null;
+	//
+	//		for( int iterationIndex = 0; iterationIndex < ITERATION_COUNT; iterationIndex++ ) {
+	//			Statistics stats = new Statistics( SAMPLES_PER_ITERATION );
+	//			for( int sampleIndex = 0; sampleIndex < SAMPLES_PER_ITERATION; sampleIndex++ ) {
+	//				stats.add( counter.waitFor(), counter.getNanoTime() );
+	//				count++;
+	//			}
+	//			stats.process();
+	//			if( best == null || stats.getJitter() < best.getJitter() ) best = stats;
+	//			//if( best == null || stats.getMax() < best.getMax() ) best = stats;
+	//
+	//			// This logic takes into consideration how many cores are being used
+	//			if( count % getCoreCount() == 0 ) setProgress( count / getCoreCount() );
+	//		}
+	//
+	//		return best;
+	//	}
+
 	private Statistics runTest( Counter counter ) throws InterruptedException {
 		Statistics best = null;
 
 		for( int iterationIndex = 0; iterationIndex < ITERATION_COUNT; iterationIndex++ ) {
-			Statistics stats = new Statistics( SAMPLES_PER_ITERATION );
-			for( int sampleIndex = 0; sampleIndex < SAMPLES_PER_ITERATION; sampleIndex++ ) {
-				counter.runFor( SAMPLE_TIME );
-				stats.add( counter.getCount(), counter.getTime() );
+			Statistics stats = new Statistics( BLOCKS_PER_ITERATION );
+			for( int sampleIndex = 0; sampleIndex < BLOCKS_PER_ITERATION; sampleIndex++ ) {
+				counter.runFor( SAMPLE_TIME_MS );
+				stats.add( counter.getCount(), counter.getNanoTime() );
 				count++;
 			}
 			stats.process();
 			if( best == null || stats.getJitter() < best.getJitter() ) best = stats;
+			//if( best == null || stats.getMax() < best.getMax() ) best = stats;
 
 			// This logic takes into consideration how many cores are being used
 			if( count % getCoreCount() == 0 ) setProgress( count / getCoreCount() );
@@ -134,6 +165,60 @@ public class AcornChecker implements Callable<Long> {
 		for( Consumer<Integer> listener : new HashSet<>( listeners ) ) {
 			listener.accept( step );
 		}
+	}
+
+}
+
+class Iteration {
+
+	private final Set<Block> blocks;
+
+	public Iteration( Runnable test ) {
+		blocks = new HashSet<>();
+		for( int iterationIndex = 0; iterationIndex < AcornChecker.BLOCKS_PER_ITERATION; iterationIndex++ ) {
+			blocks.add( new Block( test ) );
+		}
+	}
+
+	public Set<Sample> getBlocks() {
+		return blocks.stream().flatMap( b -> b.getSamples().stream() ).collect( Collectors.toSet() );
+	}
+
+	public Statistics getStatistics() {
+		Statistics best;
+
+		// Find the "best" sample from the block
+		best = blocks.iterator().next().collect();
+
+		return best;
+	}
+
+}
+
+class Block {
+
+	private final Set<Sampler> samples;
+
+	// FIXME This should run samples in coreCount groups
+
+	public Block( Runnable test ) {
+		samples = new HashSet<>();
+		for( int iterationIndex = 0; iterationIndex < AcornChecker.SAMPLES_PER_BLOCK; iterationIndex++ ) {
+			samples.add( new Sampler( AcornChecker.SAMPLE_TIME_MS, test ) );
+		}
+	}
+
+	public Set<? extends Sample> getSamples() {
+		return samples;
+	}
+
+	public Statistics collect() {
+		samples.forEach( System.out::println );
+
+		Statistics stats = new Statistics( AcornChecker.SAMPLES_PER_BLOCK );
+		samples.forEach( s -> stats.add( s.getCount(), s.getNanos() ) );
+		stats.process();
+		return stats;
 	}
 
 }

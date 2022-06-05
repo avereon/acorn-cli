@@ -36,11 +36,16 @@ public class Counter {
 		return count;
 	}
 
+	@Override
+	public String toString() {
+		return "count=" + count + " time=" + time;
+	}
+
 	public synchronized long getCount() {
 		return count;
 	}
 
-	public synchronized long getTime() {
+	public synchronized long getNanoTime() {
 		return time;
 	}
 
