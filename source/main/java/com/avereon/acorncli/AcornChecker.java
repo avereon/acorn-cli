@@ -53,8 +53,12 @@ public class AcornChecker implements Callable<Long> {
 		}
 	}
 
-	public int getCoreCount() {
+	public int getAvailableCoreCount() {
 		return Runtime.getRuntime().availableProcessors();
+	}
+
+	public int getCoreCount() {
+		return 1;
 	}
 
 	public int getStepCount() {
@@ -75,23 +79,23 @@ public class AcornChecker implements Callable<Long> {
 		final int coreCount = getCoreCount();
 		ExecutorService executor = Executors.newFixedThreadPool( coreCount );
 
-//		// Start all the work
-//		Set<Future<Statistics>> futures = new HashSet<>();
-//		for( int coreIndex = 0; coreIndex < coreCount; coreIndex++ ) {
-//			for( Runnable test : tests ) {
-//				futures.add( executor.submit( () -> runTest( new Counter( test ) ) ) );
-//			}
-//		}
-//
-//		// Wait for all the work
-//		for( Future<Statistics> future : futures ) {
-//			count += future.get().getAvg();
-//		}
+		// Start all the work
+		Set<Future<Statistics>> futures = new HashSet<>();
+		for( int coreIndex = 0; coreIndex < coreCount; coreIndex++ ) {
+			for( Runnable test : tests ) {
+				futures.add( executor.submit( () -> runTest( new Counter( test ) ) ) );
+			}
+		}
+
+		// Wait for all the work
+		for( Future<Statistics> future : futures ) {
+			count += future.get().getAvg();
+		}
 
 		// Single thread
-				for( Runnable test : tests ) {
-					count += runTest( new Counter( test ) ).getAvg();
-				}
+//				for( Runnable test : tests ) {
+//					count += runTest( new Counter( test ) ).getAvg();
+//				}
 
 		return count / tests.length / 100;
 	}

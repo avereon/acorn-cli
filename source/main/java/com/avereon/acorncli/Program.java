@@ -33,7 +33,7 @@ public class Program {
 			long score = checker.call();
 			System.out.println( "|" );
 			System.out.println( "Acorn score:    " + score );
-			System.out.println( "Squirrel count: " + checker.getCoreCount() );
+			System.out.println( "Squirrel count: " + checker.getAvailableCoreCount() );
 		} catch( Throwable throwable ) {
 			throwable.printStackTrace( System.err );
 		}
