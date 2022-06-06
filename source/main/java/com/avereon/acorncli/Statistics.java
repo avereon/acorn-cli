@@ -66,15 +66,12 @@ public class Statistics {
 
 			double valuesPerNano = (double)value / (double)time;
 			double nanosPerValue = (double)time / (double)value;
-			double valuesPerMilli = valuesPerNano * 1000000;
+			double valuesPerMilli = (double)value * 1000000.0 / (double)time;
+			double millisPerValue = (double)time / ((double)value * 1000000.0);
 
-			//System.err.println( "index=" + index + "  value=" + value + "  time=" + time );
-			//System.err.println( "  vpm=" + valuesPerMilli );
-			long timeCorrectedValue = (long)valuesPerMilli;
-
-			minimum = Math.min( minimum, timeCorrectedValue );
-			average = (coefficient * average + timeCorrectedValue) / (coefficient + 1);
-			maximum = Math.max( maximum, timeCorrectedValue );
+			minimum = Math.min( minimum, (long)valuesPerMilli );
+			average = (coefficient * average + (long)valuesPerMilli) / (coefficient + 1);
+			maximum = Math.max( maximum, (long)valuesPerMilli );
 
 			coefficient++;
 		}

@@ -24,7 +24,7 @@ public class Program {
 	public void run( String[] commands ) {
 		printHeader( card );
 
-		AcornChecker checker = new AcornChecker( new LoadTest(), new LoadTest() );
+		AcornChecker checker = new AcornChecker( 1, new LoadTest(), new LoadTest() );
 		try {
 			int steps = checker.getStepCount();
 			System.out.println( "|" + "=".repeat( steps ) + "|" );

@@ -11,8 +11,14 @@ public class Sampler implements Sample {
 	private long time;
 
 	public Sampler( long limitMs, Runnable test ) {
-		this.limit = limitMs * 100000;
+		this.limit = limitMs * 1000000;
 		this.test = test;
+	}
+
+	public synchronized void waitFor() throws InterruptedException {
+		while( this.time == 0 ) {
+			this.wait( limit / 1000000, (int)(limit % 1000000) );
+		}
 	}
 
 	public long getCount() {
@@ -21,13 +27,6 @@ public class Sampler implements Sample {
 
 	public long getNanos() {
 		return time;
-	}
-
-	public synchronized long waitFor() throws InterruptedException {
-		while( this.time == 0 ) {
-			this.wait( 1000 );
-		}
-		return count;
 	}
 
 	@Override
@@ -46,6 +45,7 @@ public class Sampler implements Sample {
 			this.time = stopTime - startTime;
 		}
 		//System.out.println( "End test." );
+		//System.out.println( this );
 		return this;
 	}
 

@@ -10,7 +10,7 @@ public class LoadTest implements Runnable {
 
 	@Override
 	public void run() {
-		value = value / r.nextDouble();
+		value = value / Math.PI;
 	}
 
 }
