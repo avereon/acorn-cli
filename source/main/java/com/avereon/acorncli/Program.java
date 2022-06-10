@@ -80,12 +80,12 @@ public class Program {
 		double sumOne = monitorOne.getStatistics().getSumValue();
 
 		double efficiency = scoreAll / scoreOne;
-		if( efficiency < 0.5 ) {
-			// Likely to be running simultaneous multithreading (SMT)
-			efficiency *= 2;
-			scoreAll *= 2;
-			sumAll *= 2;
-		}
+//		if( efficiency < 0.5 ) {
+//			// Likely to be running simultaneous multithreading (SMT)
+//			efficiency *= 2;
+//			scoreAll *= 2;
+//			sumAll *= 2;
+//		}
 
 		System.out.printf( "Throughput on all threads: %8.0f%n", sumAll );
 		System.out.printf( "Score all threads:         %8.0f%n", scoreAll );
