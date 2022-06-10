@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * runs.
  */
 @CustomLog
-public class AcornChecker implements Callable<Long> {
+public class AcornChecker implements AcornCounter {
 
 	public static final int SAMPLE_TIME_MS = 100;
 
@@ -29,15 +29,17 @@ public class AcornChecker implements Callable<Long> {
 
 	public static final int BLOCKS_PER_ITERATION = 10;
 
-	private int steps;
+	private long total;
 
-	private final Set<Consumer<Integer>> listeners;
+	private final Set<Consumer<Long>> listeners;
 
 	private final Runnable[] tests;
 
 	private final int coreCount;
 
 	private final ExecutorService executor;
+
+	private long score;
 
 	public AcornChecker() {
 		this( getAvailableCoreCount(), new LoadTest() );
@@ -51,16 +53,32 @@ public class AcornChecker implements Callable<Long> {
 		this.tests = tests;
 		this.executor = Executors.newFixedThreadPool( this.coreCount = coreCount );
 		this.listeners = new CopyOnWriteArraySet<>();
-		setTotal( this.steps = tests.length * ITERATIONS_PER_TEST );
+		setTotal( this.total = tests.length * ITERATIONS_PER_TEST );
 	}
 
 	@Override
-	public Long call() throws Exception {
+	public boolean isRunning() {
+		return executor != null && !executor.isTerminated();
+	}
+
+	@Override
+	public AcornCounter start() {
 		try {
-			return runTests( tests );
-		} catch( InterruptedException ignore ) {
-			return 0L;
+			runTests( tests );
+		} catch( Exception ignore ) {
+			throw new RuntimeException( ignore );
 		}
+		return this;
+	}
+
+	@Override
+	public AcornCounter stop() {
+		return this;
+	}
+
+	@Override
+	public AcornCounter join() {
+		return this;
 	}
 
 	public static int getAvailableCoreCount() {
@@ -71,15 +89,18 @@ public class AcornChecker implements Callable<Long> {
 		return coreCount;
 	}
 
-	public int getStepCount() {
-		return steps;
+	public long getTotal() {
+		return total;
 	}
 
-	public void setTotal( int count ) {
-		this.steps = count;
+	public long getScore() {
+		return score;
+	}
+	public void setTotal( long count ) {
+		this.total = count;
 	}
 
-	public void setProgress( int progress ) {
+	public void setProgress( long progress ) {
 		fireEvent( progress );
 	}
 
@@ -97,16 +118,18 @@ public class AcornChecker implements Callable<Long> {
 			}
 		}
 
-		count += iterations.stream().mapToLong( i -> i.getStatistics().getAvg() ).sum();
+		count += iterations.stream().mapToLong( i -> i.getStatistics().getAvgValue() ).sum();
 
-		return count / iterations.size();
+		score = count / iterations.size();
+
+		return score;
 	}
 
-	public void addListener( Consumer<Integer> runnable ) {
+	public void addListener( Consumer<Long> runnable ) {
 		listeners.add( runnable );
 	}
 
-	public void removeListener( Consumer<Integer> runnable ) {
+	public void removeListener( Consumer<Long> runnable ) {
 		listeners.remove( runnable );
 	}
 
@@ -153,8 +176,8 @@ public class AcornChecker implements Callable<Long> {
 	//		return best;
 	//	}
 
-	private void fireEvent( int step ) {
-		for( Consumer<Integer> listener : new HashSet<>( listeners ) ) {
+	private void fireEvent( long step ) {
+		for( Consumer<Long> listener : new HashSet<>( listeners ) ) {
 			listener.accept( step );
 		}
 	}
@@ -210,7 +233,7 @@ public class AcornChecker implements Callable<Long> {
 		}
 
 		public Set<? extends Sample> getSamples() {
-			return samples;
+			return Set.of();
 		}
 
 		@Override

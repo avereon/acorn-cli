@@ -2,53 +2,84 @@ package com.avereon.acorncli;
 
 public class Statistics {
 
-	private long[] values;
+	private final long[] values;
 
-	private long[] times;
+	private final long[] times;
 
 	private int index;
 
-	private long min;
+	private long minValue;
 
-	private long max;
+	private long maxValue;
 
-	private long avg;
+	private long avgValue;
 
-	private double jitter;
+	private long sumValue;
+
+	private long minTime;
+
+	private long maxTime;
+
+	private long avgTime;
+
+	private long sumTime;
+
+	private double jitValue;
 
 	public Statistics( int size ) {
 		values = new long[ size ];
 		times = new long[ size ];
 	}
 
-	public void add( long value, long time ) {
+	public void add( long value, long timeNs ) {
 		values[ index ] = value;
-		times[ index ] = time;
+		times[ index ] = timeNs;
 		index++;
 	}
 
-	public void process() {
+	public Statistics process() {
 		processValues( values, times );
+		return this;
 	}
 
-	public long getMin() {
-		return min;
+	public long getMinValue() {
+		return minValue;
 	}
 
-	public long getMax() {
-		return max;
+	public long getMaxValue() {
+		return maxValue;
 	}
 
-	public long getAvg() {
-		return avg;
+	public long getAvgValue() {
+		return avgValue;
+	}
+
+	public long getSumValue() {
+		return sumValue;
+	}
+
+	public long getMinTime() {
+		return minTime;
+	}
+
+	public long getMaxTime() {
+		return maxTime;
+	}
+
+	public long getAvgTime() {
+		return avgTime;
+	}
+
+	public long getSumTime() {
+		return sumTime;
 	}
 
 	public double getJitter() {
-		return jitter;
+		return jitValue;
 	}
 
 	public String toString() {
-		return "min=" + min + " max=" + max + " avg=" + avg + " jit=" + jitter;
+		return "minValue=" + minValue + " maxValue=" + maxValue + " avgValue=" + avgValue + " jitValue=" + jitValue;
 	}
 
 	private void processValues( long[] values, long[] times ) {
@@ -56,32 +87,34 @@ public class Statistics {
 
 		long value;
 		long time;
-		long average = 0;
-		long coefficient = 0;
-		long minimum = Long.MAX_VALUE;
-		long maximum = 0;
+		long localMinValue = Long.MAX_VALUE;
+		long localMaxValue = 0;
+		long localSumValue = 0;
+		long localMinTime = Long.MAX_VALUE;
+		long localMaxTime = 0;
+		long localSumTime = 0;
 		for( int index = 0; index < count; index++ ) {
 			value = values[ index ];
 			time = times[ index ];
 
-			double valuesPerNano = (double)value / (double)time;
-			double nanosPerValue = (double)time / (double)value;
-			double valuesPerMilli = (double)value * 1000000.0 / (double)time;
-			double millisPerValue = (double)time / ((double)value * 1000000.0);
-
-			minimum = Math.min( minimum, (long)valuesPerMilli );
-			average = (coefficient * average + (long)valuesPerMilli) / (coefficient + 1);
-			maximum = Math.max( maximum, (long)valuesPerMilli );
-
-			coefficient++;
+			localSumValue += value;
+			localSumTime += time;
+			localMinValue = Math.min( localMinValue, value );
+			localMaxValue = Math.max( localMaxValue, value );
+			localMinTime = Math.min( localMinTime, time );
+			localMaxTime = Math.max( localMaxTime, time );
 		}
 
-		min = minimum;
-		avg = average;
-		max = maximum;
+		minValue = localMinValue;
+		avgValue = localSumValue / count;
+		maxValue = localMaxValue;
+		sumValue = localSumValue;
+		minTime = localMinTime;
+		avgTime = localSumTime / count;
+		maxTime = localMaxTime;
+		sumTime = localSumTime;
 
-		jitter = (maximum - minimum) / (double)average;
-		//System.err.println( "min=" + minimum + "  avg=" + average + "  max=" + maximum + "  jit=" + jitter );
+		jitValue = (minValue - maxValue) / (double)avgValue;
 	}
 
 }

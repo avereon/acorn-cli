@@ -1,23 +1,28 @@
 package com.avereon.acorncli;
 
-public class Sampler implements Sample {
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+
+public class Sampler implements Callable<Sampler> {
+
+	private static final long CONVERSION = TimeUnit.NANOSECONDS.convert( 1, TimeUnit.MILLISECONDS );
 
 	private final Runnable test;
 
-	private final long limit;
+	private final long duration;
 
 	private long count;
 
 	private long time;
 
 	public Sampler( long limitMs, Runnable test ) {
-		this.limit = limitMs * 1000000;
+		this.duration = limitMs * CONVERSION;
 		this.test = test;
 	}
 
 	public synchronized void waitFor() throws InterruptedException {
 		while( this.time == 0 ) {
-			this.wait( limit / 1000000, (int)(limit % 1000000) );
+			this.wait( duration / CONVERSION, (int)(duration % CONVERSION) );
 		}
 	}
 
@@ -30,12 +35,12 @@ public class Sampler implements Sample {
 	}
 
 	@Override
-	public Sample call() {
+	public Sampler call() {
 		//System.out.println( "Start test..." );
 		Thread thread = Thread.currentThread();
 		synchronized( this ) {
 			long startTime = System.nanoTime();
-			long endTime = startTime + limit;
+			long endTime = startTime + duration;
 			while( !thread.isInterrupted() && System.nanoTime() < endTime ) {
 				test.run();
 				count++;
