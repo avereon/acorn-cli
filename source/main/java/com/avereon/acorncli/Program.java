@@ -78,35 +78,13 @@ public class Program {
 		double scoreOne = (long)monitorOne.getThroughput( TimeUnit.SECONDS );
 		double sumAll = monitorAll.getStatistics().getSumValue();
 		double sumOne = monitorOne.getStatistics().getSumValue();
-
 		double efficiency = scoreAll / scoreOne;
-//		if( efficiency < 0.5 ) {
-//			// Likely to be running simultaneous multithreading (SMT)
-//			efficiency *= 2;
-//			scoreAll *= 2;
-//			sumAll *= 2;
-//		}
 
-		System.out.printf( "Throughput on all threads: %8.0f%n", sumAll );
-		System.out.printf( "Score all threads:         %8.0f%n", scoreAll );
-		System.out.printf( "Throughput on one thread:  %8.0f%n", sumOne );
-		System.out.printf( "Score one thread:          %8.0f%n", scoreOne );
-		System.out.printf( "All improvement over one:  %8.1f%n", sumAll / sumOne );
-		System.out.printf( "Multi-thread efficiency :  %8.1f%%%n", efficiency * 100 );
-
-		//		AcornChecker checker = new AcornChecker( 16, new HashTest() );
-		//		try {
-		//			int steps = checker.getStepCount();
-		//			System.out.println( "|" + "=".repeat( steps ) + "|" );
-		//			System.out.print( "|" );
-		//			checker.addListener( ( p ) -> System.out.print( '-' ) );
-		//			long score = checker.call();
-		//			System.out.println( "|" );
-		//			System.out.println( "Acorn score:    " + score );
-		//			System.out.println( "Squirrel count: " + AcornChecker.getAvailableCoreCount() );
-		//		} catch( Throwable throwable ) {
-		//			throwable.printStackTrace( System.err );
-		//		}
+		System.out.printf( "%-30s %8d%n","Thread count:", monitorAll.getRequestedThreads() );
+		System.out.printf( "%-30s %8.0f%n", "Score all threads:", scoreAll * monitorAll.getRequestedThreads() );
+		System.out.printf( "%-30s %8.0f%n", "Score one thread:", scoreOne );
+		System.out.printf( "%-30s %8.1f%n", "All improvement over one:", sumAll / sumOne );
+		System.out.printf( "%-30s %8.1f%%%n", "Multi-thread efficiency:", efficiency * 100 );
 
 		System.exit( 0 );
 	}
