@@ -40,7 +40,7 @@ public class AcornMonitor implements AcornCounter {
 		this( 1 );
 	}
 
-	public AcornMonitor(int requestedThreads ) {
+	public AcornMonitor( int requestedThreads ) {
 		this( requestedThreads, new HashTest() );
 	}
 
@@ -73,7 +73,7 @@ public class AcornMonitor implements AcornCounter {
 
 	@Override
 	public long getScore() {
-		return (long)getThroughput( TimeUnit.SECONDS );
+		return (long)getThroughput( TimeUnit.SECONDS ) * requestedThreads;
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public class AcornMonitor implements AcornCounter {
 	public double getThroughput( TimeUnit unit ) {
 		Statistics stats = getStatistics();
 		double throughputNanos = (double)stats.getAvgValue() / (double)stats.getAvgTime();
-		log.atConfig().log("tp="+throughputNanos + " * " + TimeUnit.NANOSECONDS.convert( 1, unit ));
+		log.atConfig().log( "tp=" + throughputNanos + " * " + TimeUnit.NANOSECONDS.convert( 1, unit ) );
 		return throughputNanos * TimeUnit.NANOSECONDS.convert( 1, unit );
 	}
 

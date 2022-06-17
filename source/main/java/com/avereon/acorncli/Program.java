@@ -5,7 +5,6 @@ import com.avereon.product.ProductCard;
 import com.avereon.util.TextUtil;
 import lombok.CustomLog;
 
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
@@ -74,14 +73,14 @@ public class Program {
 		// End of progress bar
 		//System.out.println( "|" );
 
-		double scoreAll = (long)monitorAll.getThroughput( TimeUnit.SECONDS );
-		double scoreOne = (long)monitorOne.getThroughput( TimeUnit.SECONDS );
+		double scoreAll = monitorAll.getScore();
+		double scoreOne = monitorOne.getScore();
 		double sumAll = monitorAll.getStatistics().getSumValue();
 		double sumOne = monitorOne.getStatistics().getSumValue();
-		double efficiency = scoreAll / scoreOne;
+		double efficiency = (scoreAll / monitorAll.getRequestedThreads()) / scoreOne;
 
-		System.out.printf( "%-30s %8d%n","Thread count:", monitorAll.getRequestedThreads() );
-		System.out.printf( "%-30s %8.0f%n", "Score all threads:", scoreAll * monitorAll.getRequestedThreads() );
+		System.out.printf( "%-30s %8d%n", "Thread count:", monitorAll.getRequestedThreads() );
+		System.out.printf( "%-30s %8.0f%n", "Score all threads:", scoreAll );
 		System.out.printf( "%-30s %8.0f%n", "Score one thread:", scoreOne );
 		System.out.printf( "%-30s %8.1f%n", "All improvement over one:", sumAll / sumOne );
 		System.out.printf( "%-30s %8.1f%%%n", "Multi-thread efficiency:", efficiency * 100 );
