@@ -1,4 +1,8 @@
-on: [ push, workflow_dispatch ]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
 
 env:
   AVN_PRODUCT: "acorn-cli"
